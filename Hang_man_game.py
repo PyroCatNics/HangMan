@@ -162,7 +162,6 @@ def gatherAndDisplay(event):
         main_text.config(width = 50, text = str(guessedLetters)+"\n"+"WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
         letter.destroy()
         confirm_text.destroy()
-        exit_game.destroy()
         retry_game = Button(width = 10, font = (None,60), bg = "#3acaa6", text = "New Game", command = retry_Game)
         retry_game.pack(padx = 40, pady = 30)
 def retry_Game():
