@@ -1,4 +1,5 @@
 #Cool hangman game that uses python interfaces (a lot of code is from the Hang_Man script i made a while ago)
+#The text display of the stage hangman is at doesn't work in some aspect ratios and also needs a monospace font to work properly
 
 import random, sys, subprocess, time
 from tkinter import *
