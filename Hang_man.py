@@ -1,3 +1,5 @@
+#Simple script that i made a while ago and recently adapted into the Hang_Man_Game script
+
 import os, random
 from colorama import Fore
 
