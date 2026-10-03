@@ -198,7 +198,7 @@ def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6):
     main_text = Label(game,width = 45, font = ("Liberation Mono",size), bg = colour2, text = "Welcome to hangman! Enter a letter below.")
     main_text.pack(padx = 40, pady = 20)
 
-    letter = Entry(width = 10,font = (None,40), bg = colour6)
+    letter = Entry(width = 10, font = (None,medium_size), bg = colour6)
     letter.pack(padx = 40, pady = 10)
 
     confirm_text = Label(game,width = 28, font = (None,small_size), bg = colour4, text = "Press enter to confirm your letter")
@@ -220,15 +220,15 @@ def getRatio():
     confirm_ratio.configure(bg = "#096d27")
 
     if ratio == "640x360":
-        font_size = 30
+        font_size = 15
     elif ratio == "1280x720":
-            font_size = 40
+            font_size = 30
     elif ratio == "1600x900":
-            font_size = 50
+            font_size = 40
     elif ratio == "1920x1080":
-            font_size = 60
+            font_size = 45
     elif ratio == "2560x1440":
-            font_size = 70
+            font_size = 60
 def getColour():
     global bg_colour
     global text_colour
@@ -284,7 +284,7 @@ def getColour():
         entry_colour = "#ba98e7"  
 
 config_window = Tk()
-
+config_window.title("Launcher")
 config_window.configure(bg = "#9af09d")
 
 aspect_ratio_text = Label(config_window, width = 19, font = (None,15), bg = "#48bd3d", text = "Select an aspect ratio:")
