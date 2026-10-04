@@ -282,6 +282,13 @@ def getColour():
         letter_colour = "#803cb8"
         new_colour = "#ce34d3"
         entry_colour = "#ba98e7"  
+    elif chosen_colour == "Multicolour":
+        bg_colour = "#da5555"
+        text_colour = "#e1833b"
+        exit_colour = "#5fc023"
+        letter_colour = "#2d76e5"
+        new_colour = "#8e34d3"
+        entry_colour = "#ddd647" 
 
 config_window = Tk()
 config_window.title("Launcher")
@@ -311,6 +318,7 @@ colour.insert(3,"Yellow")
 colour.insert(4,"Green")
 colour.insert(5,"Blue")
 colour.insert(6,"Purple")
+colour.insert(7,"Multicolour")
 colour.pack(padx = 40, pady = 5)
 
 confirm_colour = Button(width = 12,font = (None,15), text = "Confirm colour", bg = "#23c052", command = getColour)
