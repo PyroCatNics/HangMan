@@ -1,6 +1,9 @@
 #Cool hangman game that uses python interfaces (a lot of code is from the Hang_Man script i made a while ago)
 #The text display of the stage hangman is at needs a monospace font to work properly (best fix is to make sure you have liberation mono downloaded)
 
+#Cool hangman game that uses python interfaces (a lot of code is from the Hang_Man script i made a while ago)
+#The text display of the stage hangman is at needs a monospace font to work properly (best fix is to make sure you have liberation mono downloaded)
+
 import random
 from tkinter import *
 
@@ -175,22 +178,7 @@ def retryGameWin():
     game.destroy()
     playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_list):
-    global game
-    global main_text
-    global letter
-    global confirm_text
-    global exit_game
-    global word
-    global guessedLetters
-    global wrongGuesses
-    global timesDone
-    global small_size
-    global medium_size
-    global large_size
-    global retry_colour
-    global word_display
-    global display_colour
-    global background_colour
+    global game, main_text, letter, confirm_text, exit_game, word, guessedLetters, wrongGuesses, timesDone, small_size, medium_size, large_size, retry_colour, word_display, display_colour, background_colour
 
     background_colour = colour1
     display_colour = colour2
