@@ -1,9 +1,6 @@
 #Cool hangman game that uses python interfaces (a lot of code is from the Hang_Man script i made a while ago)
 #The text display of the stage hangman is at needs a monospace font to work properly (best fix is to make sure you have liberation mono downloaded)
 
-#Cool hangman game that uses python interfaces (a lot of code is from the Hang_Man script i made a while ago)
-#The text display of the stage hangman is at needs a monospace font to work properly (best fix is to make sure you have liberation mono downloaded)
-
 import random
 from tkinter import *
 
