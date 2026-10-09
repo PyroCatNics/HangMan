@@ -386,7 +386,7 @@ def getCategory():
     elif chosen_category == "Brands":
         category_list = ['costco','chick fil a','netflix','apple','nike','target','google','amazon','spotify','zoom','disney','roblox','nintendo','lego','microsoft','instagram','rockstar','chanel','linkedin','sony','tesla','starbucks','nvidia','honda','audi','red bull','hershey','chipotle','porsche','pinterest','logitech','crocs','gucci','amd','coca cola','national geographic','adidas','sephora','hbo','american express','puma','visa','adobe','youtube','ubisoft','riot games','airbnb','toyota','mcdonalds','fedex','twitter','uber','meta','best buy','samsung','walmart','pepsico','verison','paypal','intel','dominos','mattel','ford','dell','snapchat','hulu','kfc','warner brothers','gap','nestle','taco bell','ups','pizza hut','doordash','activision','universal','canon','bp','hp','under armour','ikea','tiktok','discord michelin','github','vmware','hasbro','olive garden','nokia','blizzard','reddit','tripadvisor','fitbit','valve','razer','lg','nickelodeon','dairy queen','shell','malwarebytes','reebok']
     elif chosen_category == "Python Keywords":
-        category_list = ['print']
+        category_list = ['print','input','if','elif','else','def','global','import','break','class','try','except','false','true','from','for','while','is','in','pass']
 def getDifficulty():
     global category_list
 
