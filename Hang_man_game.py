@@ -75,7 +75,7 @@ def hangmanDraw():
      ______
      |     |
      O     |
-    /|\    |
+    /|\\    |
            |
            |
         ________|_____'''
@@ -84,7 +84,7 @@ def hangmanDraw():
      ______
      |     |
      O     |
-    /|\    |
+    /|\\    |
     /      |
            |
         ________|_____'''
@@ -93,10 +93,10 @@ def hangmanDraw():
      ______
      |     |
      O     |
-    /|\    |
-    / \    |
+    /|\\    |
+    / \\    |
            |
-         _______|_____'''
+        _______|_____'''
 def gatherAndDisplay(event):
     global wrongGuesses
     global timesDone
@@ -152,34 +152,65 @@ def gatherAndDisplay(event):
             retry_game_lose = Button(width = 10, font = (None,medium_size), bg = retry_colour, text = "New Game", command = retryGameLose)
             retry_game_lose.pack(padx = 40, pady = 30)
         elif timesDone == 0:
-            letter.config(state = NORMAL)
-            main_text.config(bg = background_colour)
+            global flawless_colour1, flawless_colour2, flawless_colour3, flawless_colour4, flawless_colour5, flawless_colour6, bonus
+
+            flawless_colour1 = "#ffd95c"
+            flawless_colour2 = "#e7b308"
+            flawless_colour3 = "#ffcd2b"
+            flawless_colour4 = "#f0b901"
+            flawless_colour5 = "#ffd139"
+            flawless_colour6 = "#FFC400"
+
+            bonus = 1
         else:
-            letter.config(state = NORMAL)
-            main_text.config(bg = display_colour)
+            flawless_colour1 = background_colour
+            flawless_colour2 = display_colour
+            flawless_colour3 = exit_game_colour
+            flawless_colour4 = confirm_text_colour
+            flawless_colour5 = retry_colour
+            flawless_colour6 = enter_letter_colour
+
+            bonus = 0
     else:
         word_display.destroy()
+
+        main_text.config(bg = flawless_colour2)
+        game.config(bg = flawless_colour1)
+        letter.config(bg = flawless_colour6)
+        confirm_text.config(bg = flawless_colour4)
+        exit_game.config(bg = flawless_colour3)
+        streak.config(bg = flawless_colour2)
+
+        frame.config(bg = flawless_colour1)
+
         main_text.config(width = 50, font = (None,large_size), text = str(guessedLetters)+"\n"+"WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
         letter.destroy()
         confirm_text.destroy()
         retry_game_win = Button(width = 10, font = (None,medium_size), bg = retry_colour, text = "New Game", command = retryGameWin)
         retry_game_win.pack(padx = 40, pady = 30)
+        retry_game_win.config(bg = flawless_colour5)
 def retryGameLose():
     global score
     score = 0
     game.destroy()
     playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def retryGameWin():
-    global score
+    global score, score_display, bonus_score
+
     score += 1
+    bonus_score += 1 + bonus
+    score_display = str(f"Score = {bonus_score}, Streak = {score}")
     game.destroy()
     playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_list):
-    global game, main_text, letter, confirm_text, exit_game, word, guessedLetters, wrongGuesses, timesDone, small_size, medium_size, large_size, retry_colour, word_display, display_colour, background_colour
+    global game, main_text, letter, confirm_text, exit_game, word, guessedLetters, wrongGuesses, timesDone, small_size, medium_size, large_size, retry_colour, word_display, display_colour, background_colour, streak, enter_letter_colour, exit_game_colour, confirm_text_colour, frame
 
     background_colour = colour1
     display_colour = colour2
+    exit_game_colour = colour3
+    confirm_text_colour = colour4
     retry_colour = colour5
+    enter_letter_colour = colour6
     
     word = (random.choice(word_list))
     wrongGuesses = ""
@@ -212,7 +243,7 @@ def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_li
     word_display = Label(game, font = (None,large_size), bg = colour1, text = "")
     word_display.pack(padx = 40, pady = 10)
 
-    main_text = Label(game,width = 45, font = ("Liberation Mono",size), bg = colour2, text = "Welcome to hangman! Enter a letter below.")
+    main_text = Label(game,width = 45, font = ("Consolas",size), bg = colour2, text = "Welcome to hangman! Enter a letter below.")
     main_text.pack(padx = 40, pady = 10)
 
     letter = Entry(width = 10, font = (None,medium_size), bg = colour6)
@@ -224,10 +255,10 @@ def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_li
     frame = Frame(game, width = 50, bg = colour1)
     frame.pack(padx = 40, pady = 10)
 
-    exit_game = Button(frame, width = 10,font = (None,small_size), text = "Exit game", bg = colour3, command = game.destroy)
+    exit_game = Button(frame, width = 20,font = (None,small_size), text = "Exit game", bg = colour3, command = game.destroy)
     exit_game.pack(side = LEFT, padx = 20)
 
-    streak = Label(frame, bg = display_colour, font = (None,small_size), text = f"Streak:  {score}")
+    streak = Label(frame, bg = display_colour, font = (None,small_size), text = score_display)
     streak.pack(side = RIGHT, padx = 20)
 
     game.bind('<Return>',gatherAndDisplay)
@@ -355,7 +386,7 @@ def getCategory():
     elif chosen_category == "Brands":
         category_list = ['costco','chick fil a','netflix','apple','nike','target','google','amazon','spotify','zoom','disney','roblox','nintendo','lego','microsoft','instagram','rockstar','chanel','linkedin','sony','tesla','starbucks','nvidia','honda','audi','red bull','hershey','chipotle','porsche','pinterest','logitech','crocs','gucci','amd','coca cola','national geographic','adidas','sephora','hbo','american express','puma','visa','adobe','youtube','ubisoft','riot games','airbnb','toyota','mcdonalds','fedex','twitter','uber','meta','best buy','samsung','walmart','pepsico','verison','paypal','intel','dominos','mattel','ford','dell','snapchat','hulu','kfc','warner brothers','gap','nestle','taco bell','ups','pizza hut','doordash','activision','universal','canon','bp','hp','under armour','ikea','tiktok','discord michelin','github','vmware','hasbro','olive garden','nokia','blizzard','reddit','tripadvisor','fitbit','valve','razer','lg','nickelodeon','dairy queen','shell','malwarebytes','reebok']
     elif chosen_category == "Python Keywords":
-        category_list = ['print','input','if','elif','else','def','global','import','break','class','try','except','false','true','from','for','while','is','in','pass']
+        category_list = ['print']
 def getDifficulty():
     global category_list
 
@@ -370,9 +401,11 @@ def getDifficulty():
     difficulty_select.destroy()
 
 score = 0
+bonus_score = 0
+score_display = "Score = N/A, Streak = N/A"
 
 config_window = Tk()
-config_window.title("Launcher")
+config_window.title("Config Menu")
 config_window.configure(bg = "#9af09d")
 
 aspect_ratio_text = Label(config_window, width = 19, font = (None,15), bg = "#48bd3d", text = "Select an aspect ratio:")
