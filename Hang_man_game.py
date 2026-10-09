@@ -161,7 +161,7 @@ def gatherAndDisplay(event):
             flawless_colour5 = "#ffd139"
             flawless_colour6 = "#FFC400"
 
-            bonus = 1
+            bonus = 4
         else:
             flawless_colour1 = background_colour
             flawless_colour2 = display_colour
