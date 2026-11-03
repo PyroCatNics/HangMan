@@ -190,8 +190,9 @@ def gatherAndDisplay(event):
         retry_game_win.pack(padx = 40, pady = 30)
         retry_game_win.config(bg = flawless_colour5)
 def retryGameLose():
-    global score
+    global score, score_display
     score = 0
+    score_display = str(f"Score = {bonus_score}, Streak = {score}")
     game.destroy()
     playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def retryGameWin():
@@ -243,7 +244,7 @@ def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_li
     word_display = Label(game, font = (None,large_size), bg = colour1, text = "")
     word_display.pack(padx = 40, pady = 10)
 
-    main_text = Label(game,width = 45, font = ("Consolas",size), bg = colour2, text = "Welcome to hangman! Enter a letter below.")
+    main_text = Label(game, width = 45, font = ("Consolas",size), bg = colour2, text = "Welcome to hangman! Enter a letter below.")
     main_text.pack(padx = 40, pady = 10)
 
     letter = Entry(width = 10, font = (None,medium_size), bg = colour6)
@@ -384,7 +385,7 @@ def getCategory():
     elif chosen_category == "Space":
         category_list = ['planet','star','mercury','venus','earth','mars','jupiter','saturn','uranus','neptune','pluto','dwarf planet','black hole','sol','moon','luna','solar system','asteroid','meteor','comet','galaxy','milky way','andromeda','nebula','supernova','space station','astronaut','rocket','telescope','cosmos']
     elif chosen_category == "Brands":
-        category_list = ['costco','chick fil a','netflix','apple','nike','target','google','amazon','spotify','zoom','disney','roblox','nintendo','lego','microsoft','instagram','rockstar','chanel','linkedin','sony','tesla','starbucks','nvidia','honda','audi','red bull','hershey','chipotle','porsche','pinterest','logitech','crocs','gucci','amd','coca cola','national geographic','adidas','sephora','hbo','american express','puma','visa','adobe','youtube','ubisoft','riot games','airbnb','toyota','mcdonalds','fedex','twitter','uber','meta','best buy','samsung','walmart','pepsico','verison','paypal','intel','dominos','mattel','ford','dell','snapchat','hulu','kfc','warner brothers','gap','nestle','taco bell','ups','pizza hut','doordash','activision','universal','canon','bp','hp','under armour','ikea','tiktok','discord michelin','github','vmware','hasbro','olive garden','nokia','blizzard','reddit','tripadvisor','fitbit','valve','razer','lg','nickelodeon','dairy queen','shell','malwarebytes','reebok']
+        category_list = ['costco','chick fil a','netflix','apple','nike','target','google','amazon','spotify','zoom','disney','roblox','nintendo','lego','microsoft','instagram','rockstar','chanel','linkedin','sony','tesla','starbucks','nvidia','honda','audi','red bull','hershey','chipotle','porsche','pinterest','logitech','crocs','gucci','amd','coca cola','national geographic','adidas','sephora','hbo','american express','puma','visa','adobe','youtube','ubisoft','riot games','airbnb','toyota','mcdonalds','fedex','twitter','uber','meta','best buy','samsung','walmart','pepsico','verison','paypal','intel','dominos','mattel','ford','dell','snapchat','hulu','kfc','warner brothers','gap','nestle','taco bell','ups','pizza hut','doordash','activision','universal','canon','bp','hp','under armour','ikea','tiktok','discord','michelin','github','vmware','hasbro','olive garden','nokia','blizzard','reddit','tripadvisor','fitbit','valve','razer','lg','nickelodeon','dairy queen','shell','malwarebytes','reebok']
     elif chosen_category == "Python Keywords":
         category_list = ['print','input','if','elif','else','def','global','import','break','class','try','except','false','true','from','for','while','is','in','pass']
 def getDifficulty():
