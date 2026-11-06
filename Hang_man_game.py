@@ -194,7 +194,7 @@ def retryGameLose():
     score = 0
     score_display = str(f"Score = {bonus_score}, Streak = {score}")
     game.destroy()
-    playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
+    playGame(bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def retryGameWin():
     global score, score_display, bonus_score
 
@@ -202,8 +202,8 @@ def retryGameWin():
     bonus_score += 1 + bonus
     score_display = str(f"Score = {bonus_score}, Streak = {score}")
     game.destroy()
-    playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
-def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_list):
+    playGame(bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
+def playGame(colour1, colour2, colour3, colour4, colour5, colour6, word_list):
     global game, main_text, letter, confirm_text, exit_game, word, guessedLetters, wrongGuesses, timesDone, small_size, medium_size, large_size, retry_colour, word_display, display_colour, background_colour, streak, enter_letter_colour, exit_game_colour, confirm_text_colour, frame
 
     background_colour = colour1
@@ -223,44 +223,46 @@ def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_li
         else:    
             list.append(guessedLetters,"_")
 
-    num_to_divide_by = len(word) // 10
-
-    if len(word) > 10:
-        large_size = int(size // num_to_divide_by)
-    else:
-        large_size = size
-
-    small_size = int(size // 1.35)
-    medium_size = int(size // 1.2)
-
     hangmanDraw()
 
     game = Tk()
     game.title("Hangman")
     game.attributes('-fullscreen', True)
-
     game.configure(bg = colour1)
 
+    num_to_divide_by = len(word) * 4
+
+    size = game.winfo_screenwidth() // 45
+    small_size = game.winfo_screenwidth() // 60
+    medium_size = game.winfo_screenwidth() // 55
+    
+    if len(word) > 10:
+        large_size = game.winfo_screenwidth() // num_to_divide_by
+    else:
+        large_size = size
+
+    padding = game.winfo_screenheight() // 256
+
     word_display = Label(game, font = (None,large_size), bg = colour1, text = "")
-    word_display.pack(padx = 40, pady = 10)
+    word_display.pack(padx = 40, pady = padding)
 
     main_text = Label(game, width = 45, font = ("Consolas",size), bg = colour2, text = "Welcome to hangman! Enter a letter below.")
-    main_text.pack(padx = 40, pady = 10)
+    main_text.pack(padx = 40, pady = padding)
 
     letter = Entry(width = 10, font = (None,medium_size), bg = colour6)
-    letter.pack(padx = 40, pady = 10)
+    letter.pack(padx = 40, pady = padding)
 
     confirm_text = Label(game,width = 28, font = (None,small_size), bg = colour4, text = "Press enter to confirm your letter")
-    confirm_text.pack(padx = 40, pady = 10)
+    confirm_text.pack(padx = 40, pady = padding)
 
     frame = Frame(game, width = 50, bg = colour1)
-    frame.pack(padx = 40, pady = 10)
+    frame.pack(padx = 40, pady = padding)
 
     exit_game = Button(frame, width = 20,font = (None,small_size), text = "Exit game", bg = colour3, command = game.destroy)
-    exit_game.pack(side = LEFT, padx = 20)
+    exit_game.pack(side = LEFT, padx = padding)
 
     streak = Label(frame, bg = display_colour, font = (None,small_size), text = score_display)
-    streak.pack(side = RIGHT, padx = 20)
+    streak.pack(side = RIGHT, padx = padding)
 
     game.bind('<Return>',gatherAndDisplay)
 
@@ -268,7 +270,6 @@ def playGame(size, colour1, colour2, colour3, colour4, colour5, colour6, word_li
 def playGameFirst():
     global difficulty_choose
 
-    getRatio()
     getColour()
     getCategory()
     
@@ -294,25 +295,8 @@ def playGameFirst():
         confirm_difficulty.pack(padx = 40, pady = 5)
 
         difficulty_select.mainloop()
-    else:
-        pass
 
-    playGame(font_size, bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
-def getRatio():
-    global font_size
-
-    ratio = aspect_ratio.get(aspect_ratio.curselection())
-
-    if ratio == "640x360":
-        font_size = 15
-    elif ratio == "1280x720":
-            font_size = 30
-    elif ratio == "1600x900":
-            font_size = 40
-    elif ratio == "1920x1080":
-            font_size = 45
-    elif ratio == "2560x1440":
-            font_size = 60
+    playGame(bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def getColour():
     global bg_colour
     global text_colour
@@ -408,17 +392,6 @@ score_display = "Score = N/A, Streak = N/A"
 config_window = Tk()
 config_window.title("Config Menu")
 config_window.configure(bg = "#9af09d")
-
-aspect_ratio_text = Label(config_window, width = 19, font = (None,15), bg = "#48bd3d", text = "Select an aspect ratio:")
-aspect_ratio_text.pack(padx = 40, pady = 10)
-
-aspect_ratio = Listbox(config_window, exportselection = False)
-aspect_ratio.insert(1,"640x360")
-aspect_ratio.insert(2,"1280x720")
-aspect_ratio.insert(3,"1600x900")
-aspect_ratio.insert(4,"1920x1080")
-aspect_ratio.insert(5,"2560x1440")
-aspect_ratio.pack(padx = 40, pady = 5)
 
 colour_text = Label(config_window, width = 14, font = (None,15), bg = "#48bd3d", text = "Select a colour:")
 colour_text.pack(padx = 40, pady = 10)
