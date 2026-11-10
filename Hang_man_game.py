@@ -4,8 +4,6 @@
 import random
 from tkinter import *
 
-def doNothing():
-    thisWill = "doNothing"
 def hangmanDraw():
     global hangman1
     hangman1 = '''
@@ -98,13 +96,11 @@ def hangmanDraw():
            |
         _______|_____'''
 def gatherAndDisplay(event):
-    global wrongGuesses
-    global timesDone
-    global hangmanDisplay
-    global accusation
+    global wrongGuesses, timesDone, hangmanDisplay, accusation, reiteration
     accusation = ""
-    global reiteration
     reiteration = ""
+
+    confirm_text.destroy()
     
     guess = letter.get()
     if guess in word:
@@ -143,21 +139,23 @@ def gatherAndDisplay(event):
 
     letter.delete(0, 'end')
 
+    global retry_size
+
     if "_" in guessedLetters:
         word_display.config(width = 50, bg = display_colour, text = f"{str(guessedLetters)}\n")
         main_text.config(width = 50, text = hangmanDisplay+wrongGuesses+accusation+reiteration)
         if timesDone > 9:
+            global retry_game_lose
+            
             letter.destroy()
-            confirm_text.destroy()
-            retry_game_lose = Button(width = 10, font = (None,medium_size), bg = retry_colour, text = "New Game", command = retryGameLose)
-            retry_game_lose.pack(padx = 40, pady = 30)
+            retry_game_lose = Button(retry_frame, width = 10, font = (None, retry_size), bg = retry_colour, text = "New Game", command = retryGameLose)
+            retry_game_lose.pack()
         elif timesDone == 0:
             global flawless_colour1, flawless_colour2, flawless_colour3, flawless_colour4, flawless_colour5, flawless_colour6, bonus
 
             flawless_colour1 = "#ffd95c"
             flawless_colour2 = "#e7b308"
             flawless_colour3 = "#ffcd2b"
-            flawless_colour4 = "#f0b901"
             flawless_colour5 = "#ffd139"
             flawless_colour6 = "#FFC400"
 
@@ -166,29 +164,27 @@ def gatherAndDisplay(event):
             flawless_colour1 = background_colour
             flawless_colour2 = display_colour
             flawless_colour3 = exit_game_colour
-            flawless_colour4 = confirm_text_colour
             flawless_colour5 = retry_colour
             flawless_colour6 = enter_letter_colour
 
             bonus = 0
     else:
+        global retry_game_win
+
         word_display.destroy()
 
         main_text.config(bg = flawless_colour2)
         game.config(bg = flawless_colour1)
         letter.config(bg = flawless_colour6)
-        confirm_text.config(bg = flawless_colour4)
         exit_game.config(bg = flawless_colour3)
         streak.config(bg = flawless_colour2)
-
         frame.config(bg = flawless_colour1)
+        retry_frame.config(bg = flawless_colour1)
 
-        main_text.config(width = 50, font = (None,large_size), text = str(guessedLetters)+"\n"+"WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
+        main_text.config(width = 50, text = str(guessedLetters)+"\n"+"WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
         letter.destroy()
-        confirm_text.destroy()
-        retry_game_win = Button(width = 10, font = (None,medium_size), bg = retry_colour, text = "New Game", command = retryGameWin)
-        retry_game_win.pack(padx = 40, pady = 30)
-        retry_game_win.config(bg = flawless_colour5)
+        retry_game_win = Button(retry_frame, width = 10, font = (None, retry_size), bg = flawless_colour5, text = "New Game", command = retryGameWin)
+        retry_game_win.pack()
 def retryGameLose():
     global score, score_display
     score = 0
@@ -204,7 +200,7 @@ def retryGameWin():
     game.destroy()
     playGame(bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
 def playGame(colour1, colour2, colour3, colour4, colour5, colour6, word_list):
-    global game, main_text, letter, confirm_text, exit_game, word, guessedLetters, wrongGuesses, timesDone, small_size, medium_size, large_size, retry_colour, word_display, display_colour, background_colour, streak, enter_letter_colour, exit_game_colour, confirm_text_colour, frame
+    global retry_frame, num_to_divide_by, retry_size, game, main_text, letter, confirm_text, exit_game, word, guessedLetters, wrongGuesses, timesDone, small_size, medium_size, large_size, size, retry_colour, word_display, display_colour, background_colour, streak, enter_letter_colour, exit_game_colour, confirm_text_colour, frame
 
     background_colour = colour1
     display_colour = colour2
@@ -230,14 +226,15 @@ def playGame(colour1, colour2, colour3, colour4, colour5, colour6, word_list):
     game.attributes('-fullscreen', True)
     game.configure(bg = colour1)
 
-    num_to_divide_by = len(word) * 4
+    num_to_divide_by = len(word) * 29
 
-    size = game.winfo_screenwidth() // 45
-    small_size = game.winfo_screenwidth() // 60
-    medium_size = game.winfo_screenwidth() // 55
+    size = game.winfo_screenheight() // 25
+    small_size = game.winfo_screenheight() // 33
+    medium_size = game.winfo_screenheight() // 31
+    retry_size = medium_size
     
     if len(word) > 10:
-        large_size = game.winfo_screenwidth() // num_to_divide_by
+        large_size = game.winfo_screenheight() // num_to_divide_by
     else:
         large_size = size
 
@@ -259,12 +256,19 @@ def playGame(colour1, colour2, colour3, colour4, colour5, colour6, word_list):
     frame.pack(padx = 40, pady = padding)
 
     exit_game = Button(frame, width = 20,font = (None,small_size), text = "Exit game", bg = colour3, command = game.destroy)
-    exit_game.pack(side = LEFT, padx = padding)
+    exit_game.pack(side = LEFT, padx = padding * 4)
 
-    streak = Label(frame, bg = display_colour, font = (None,small_size), text = score_display)
-    streak.pack(side = RIGHT, padx = padding)
+    streak = Label(frame, bg = colour2, font = (None,small_size), text = score_display)
+    streak.pack(side = RIGHT, padx = padding * 4)
+
+    retry_frame = Frame(game, width = 50, bg = colour1)
+    retry_frame.pack(padx = 40, pady = padding * 3)
+    
+    game.update()
 
     game.bind('<Return>',gatherAndDisplay)
+    game.bind('<F11>', fullscreenToggle)
+    game.bind('<Configure>', resizeWidgets)
 
     game.mainloop()
 def playGameFirst():
@@ -384,7 +388,117 @@ def getDifficulty():
     elif chosen_difficulty == "Hard":
         category_list = ['abstractionism','abstractionist','acanthocephalan','acceptability','accessibility','acclimatisation','acclimatization','accommodatingly','accommodational','accomplishment','accountantship','acculturational','acetophenetidin','achondroplasia','achondroplastic','achromaticity','acknowledgeable','acknowledgement','acknowledgment','acquisitiveness','actinotherapy','adenocarcinoma','adenohypophysis','adenoidectomy','admirableness','admissibility','adrenalectomy','adventurousness','aftersensation','aggrandisement','aggrandizement','agranulocytosis','agreeableness','agriculturalist','airworthiness','alphabetisation','alphabetization','ambassadorship','ambidexterity','ambitiousness','ammonification','amphidiploidy','amphitheatrical','anagrammatise','anagrammatize','anisotropically','anomalousness','answerability','antepenultimate','anthropocentric','anthropogenesis','anthropogenetic','anthropolatry','anthropological','anthropologist','anthropometry','anthropomorphic','anthropophagite','anthropophagous','anthropophagy','anthroposophy','antiarrhythmic','anticholinergic','anticlimactical','anticonvulsant','antidepressant','antimetabolite','antineoplastic','antiperspirant','antisyphilitic','appealingness','applicability','apprenticeship','approachability','appropriateness','arbitrariness','arboriculturist','archaebacterium','archaeopteryx','archidiaconate','architecturally','argumentatively','arteriography','artificiality','asclepiadaceous','assertiveness','assiduousness','associability','associationism','astronavigation','astrophysicist','atherosclerosis','atherosclerotic','atrociousness','attainability','attentiveness','audaciousness','authentication','authoritatively','autobiographer','autobiography','autoradiograph','autoradiography','autosuggestion','availableness','bacteriological','bacteriologist','bacteriophagous','barbarousness','basidiomycetous','bastardisation','bastardization','beauteousness','beautification','believability','bellicoseness','benzodiazepine','bibliographical','bioengineering','biogeographical','bioluminescence','bioremediation','biotechnology','blamelessness','blameworthiness','blaxploitation','bloodthirsty','boundlessness','bounteousness','bountifulness','boustrophedonic','bowdlerisation','bowdlerization','brachycephalism','brachycephaly','brachydactylia','brachydactylous','brachydactyly','breakableness','bronchodilator','bumptiousness','businessperson','capaciousness','capitalisation','capitalization','carcinosarcoma','cardiopulmonary','categorisation','categorization','catheterisation','catheterization','ceaselessness','centralisation','centralization','centrifugation','centrosymmetric','cephalochordate','cerebrovascular','ceremoniousness','chancellorship','changeability','changefulness','channelization','cheerlessness','childlessness','chincherinchee','chloramphenicol','chlorothiazide','chlorpromazine','cholangiography','cholecalciferol','cholecystectomy','cholecystitis','cholecystokinin','cholinesterase','chordamesoderm','chorioallantois','chromatographic','chronologically','churrigueresque','cinematographer','circularization','circumambulate','circumferential','circumlocution','circumnavigate','circumscription','circumspection','circumstantiate','circumvallate','circumvolution','classification','claustrophobia','cloudlessness','coldheartedness','collateralize','colorlessness','combativeness','combustibleness','comfortableness','commercialise','commercialize','commissionaire','commonplaceness','communicational','commutability','comparability','compassionately','compatibility','competitiveness','complementarity','complementary','complementation','complicatedness','compositeness','comprehensively','compressibility','comptrollership','computationally','computerization','comradeliness','conceitedness','conceivableness','concentricity','conceptualise','conceptualistic','conceptuality','conceptualize','concessionaire','condescendingly','confectionary','confectionery','confidentiality','configurational','confrontational','congenialness','conglomeration','conglutination','congratulation','congratulations','congruousness','connectedness','connoisseurship','consanguinity','conscientiously','consequentially','conservationist','considerateness','conspicuousness','constitutional','constructivism','constructivist','consubstantiate','contemporaneity','contemporaneous','contemptibility','contentedness','contentiousness','contractility','contradictorily','contradictory','contraindicate','controllership','controversially','conventionalise','conventionalism','conventionality','conventionalize','conversationist','cooperativeness','correlativity','correspondence','correspondingly','corticosteroid','corticosterone','corticotrophin','corynebacterium','councillorship','counsellorship','counteractively','counterargument','counterattack','counterbalance','counterbalanced','counterchange','countercheck','counterclaim','counterculture','countercurrent','counterexample','counterirritant','countermarch','countermeasure','counterplot','counterpoint','counterproposal','counterweight','credulousness','criminalisation','criminalization','crossopterygian','crotchetiness','cryptographical','cryptorchidism','crystallisation','crystallization','crystallography','cyanocobalamin','cyproheptadine','cytogeneticist','cytomegalovirus','cytophotometric','cytoplasmically','dangerousness','dastardliness','dauntlessness','decalcification','decarboxylate','decarboxylation','deceitfulness','deceptiveness','decimalisation','decimalization','decolonisation','decolonization','decommission','deconcentrate','deconstruction','decontaminate','decontamination','decriminalise','decriminalize','dedifferentiate','defectiveness','defencelessness','defenestration','defenselessness','defensibility','defensiveness','defibrillation','dehumanization','dehydrogenate','delectability','deliciousness','demagnetisation','demagnetization','dematerialise','dematerialize','demisemiquaver','demobilisation','demobilization','democratisation','democratization','demonetisation','demonetization','demonstrability','demonstratively','demoralisation','demoralization','demythologise','demythologize','denationalise','denationalize','denazification','dependability','depersonalise','depersonalize','depigmentation','depolarisation','depolarization','dermatoglyphic','dermatoglyphics','dermatomyositis','dermatophytosis','desalinisation','desalinization','desensitisation','desensitization','desertification','deservingness','desirableness','despicability','dessertspoonful','destabilisation','destabilization','destructibility','destructiveness','determinateness','detoxification','detribalisation','detribalization','developmentally','devitalisation','devitalization','dextrorotation','diagonalization','dichotomization','differentiate','differentiation','differentiator','digestibility','digitalisation','digitalization','dimenhydrinate','dinoflagellate','diphenhydramine','disaccharidase','disadvantageous','disaffirmation','disambiguation','disappointingly','disappointment','disapprobation','disarrangement','disarticulate','disassociation','disciplinarian','discolouration','discombobulate','discombobulated','disconcertingly','disconcertment','discontentment','discontinuance','discontinuation','discontinuity','discountenance','discouragement','discrimination','disembarkation','disembarrass','disembowelment','disenchantment','disenfranchise','disenfranchised','disentanglement','disequilibrium','disestablish','disgracefulness','disgruntlement','disheartenment','disillusion','disillusionment','disinclination','disinfestation','disinformation','disinheritance','disintegration','disinterestedly','disorganisation','disorganization','disorientation','disparateness','dispassionately','dispensableness','disproportional','disreputability','disrespectfully','dissatisfaction','dissatisfactory','dissimilarity','dissolubility','dissoluteness','distastefulness','distinctiveness','distinguishable','distressfulness','distrustfulness','diversification','dolichocephalic','domineeringness','downheartedness','downrightness','duplicability','easygoingness','ecclesiasticism','echocardiogram','echocardiograph','econometrician','educationalist','effectiveness','effectualness','efficaciousness','effortfulness','egalitarianism','elaborateness','electioneering','electrification','electrochemical','electromagnetic','electromyogram','electromyograph','electronegative','electrophoresis','electrophoretic','electrophorus','electropositive','emancipationist','emotionlessness','enantiomorphism','encephalography','encyclopaedism','encyclopaedist','endocrinologist','endocrinology','enfranchisement','enjoyableness','enthronisation','enthronization','entrepreneurial','environmentally','ephemeralness','epicondylitis','epidemiological','epidemiologist','epistemological','epistemologist','equalitarianism','equivocalness','ergocalciferol','erroneousness','erythropoietin','essentialness','euphemistically','eutrophication','evangelicalism','everlastingness','excessiveness','exchangeability','excitableness','exclusiveness','excommunicate','excommunication','exemplification','exhibitionistic','existentialism','existentialist','expansiveness','expeditiousness','expensiveness','experimentalism','experimentation','exponentiation','expressionistic','exquisiteness','extemporisation','extemporization','extensiveness','exteriorisation','exteriorization','externalisation','externalization','extracurricular','extralinguistic','extraordinarily','facetiousness','faithlessness','familiarisation','familiarization','faultlessness','favorableness','featherbedding','federalisation','federalization','ferociousness','ferrimagnetism','ferromagnetism','fibrinopeptide','fibrocartilage','fingerprinting','fingerspelling','flibbertigibbet','foolhardiness','foreordination','foresightedness','forgetfulness','forgivingness','formidability','fortunetelling','fraction','fractiousness','frangibleness','fraternisation','fraternization','frightfulness','frivolousness','fructification','fruitlessness','fugaciousness','functionality','fundamentalism','fundamentalist','furfuraldehyde','garrulousness','gastroenteritis','generalisation','generalization','gentrification','geomorphology','glucocorticoid','glutinousness','glyceraldehyde','gracelessness','grandiloquence','grandiloquently','gravitationally','greensickness','grotesqueness','groundbreaking','guiltlessness','gynandromorphic','gyrostabiliser','gyrostabilizer','habitableness','halfpennyworth','haphazardness','hardheartedness','harpsichordist','hazardousness','headmastership','healthfulness','heartlessness','heartsickness','hemagglutinate','hemimetabolism','hemochromatosis','hemoglobinuria','hereditarianism','hermaphroditism','heterogeneity','heterosexuality','hexachlorophene','historiographer','holometabolism','homogeneousness','homogenisation','homogenization','homosexuality','honorableness','horizontality','horticulturally','horticulturist','hospitalisation','hospitalization','humanitarianism','hydrocephalus','hydrocortisone','hydroxyproline','hyperactivity','hyperadrenalism','hypercalcaemia','hypercatalectic','hyperextension','hyperglycaemia','hyperlipidemia','hypersecretion','hypersensitised','hypersensitized','hyperthyroidism','hypertonicity','hypervelocity','hyperventilate','hypochondriacal','hypochondriasis','hypostatization','hypothyroidism','ichthyosaur','ichthyosaurus','identicalness','identification','ideographically','ignominiousness','illogicalness','illustriousness','imaginativeness','immaterialise','immateriality','immaterialize','immediateness','immobilisation','immobilization','immovableness','immunochemistry','immunocompetent','immunodeficient','immunoglobulin','immunologically','immunopathology','immunotherapy','immutableness','impalpability','impassiveness','impeccability','impecuniousness','impenetrability','imperfectness','imperiousness','imperishability','impermeableness','impetuousness','implausibleness','implementation','impossibility','impoverishment','impreciseness','impressionistic','improbability','impulsiveness','inaccessibility','inadmissibility','inanimateness','inapplicability','inappropriately','inattentiveness','inaudibleness','incapableness','incessantness','incommensurable','incommunicative','incommutability','incompatibility','incomprehension','incomprehensive','incongruousness','inconsequential','inconsiderately','inconsideration','inconsistency','inconspicuously','inconvenience','incoordination','incorrectness','incorruptness','incredibility','inculpability','incurableness','indemnification','indeterminacy','indetermination','indigestibility','indisputability','individualise','individualistic','individuality','individualize','indoctrination','industrialise','industrialize','industriousness','ineffectiveness','ineffectualness','inefficaciously','ineligibility','inevitability','inexorability','inexpensiveness','infallibility','infeasibility','inflexibility','infrastructure','ingeniousness','ingenuousness','inhomogeneity','inhospitality','initialisation','initialization','injudiciousness','injuriousness','innumerableness','inopportuneness','inquisitiveness','insensibility','insensitiveness','insensitivity','insidiousness','insignificance','insignificantly','inspirationally','instantaneously','institutionally','instructorship','instrumentalism','instrumentalist','instrumentality','instrumentation','insubordination','insubstantially','insufficiency','insurrectionary','insurrectionism','insurrectionist','intangibility','intelligentsia','intelligibility','intemperateness','intensification','intensiveness','interchangeable','interchangeably','intercollegiate','intercommunion','interconnect','interconnection','interdependence','interdependency','interestingness','interferometer','intermediation','intermittency','internalisation','internalization','internationally','interpellation','interpenetrate','interpretation','interrogatively','interrogatory','interscholastic','interstratify','intractableness','intramuscularly','intransigency','intrusiveness','intussuscept','intussusception','invariability','inventiveness','invincibility','invisibleness','involuntariness','invulnerability','irrationality','irreligiousness','irresistibility','irreversibility','judiciousness','jurisprudential','keratinisation','keratinization','kindergartener','kindheartedness','kinesthetically','laboriousness','labyrinthitis','labyrinthodont','lackadaisically','lamellibranch','lateralisation','lateralization','latitudinarian','lecherousness','legislatorship','leisureliness','lepidopterology','lexicalisation','lexicalization','lexicographical','liberalisation','liberalization','libertarianism','lightheadedness','lightsomeness','limitlessness','litigiousness','loathsomeness','logarithmically','longsightedness','lucrativeness','luxuriousness','lymphadenitis','lymphadenopathy','lymphangiogram','lymphogranuloma','lyophilisation','lyophilization','lysogenization','macroeconomist','macroevolution','macroscopically','macrosporangium','magnanimousness','malacopterygian','maladroitness','maliciousness','malnourishment','manageability','maneuverability','manoeuvrability','marginalisation','marginalization','marriageability','masculinization','masochistically','mastoidectomy','materfamilias','materialisation','materialization','meaninglessness','measurability','mechanistically','megagametophyte','megalocephaly','megasporophyll','melodiousness','memorialization','mercaptopurine','merchantability','mercilessness','meritoriousness','metamathematics','metastability','methamphetamine','methylphenidate','microbiologist','microelectronic','microevolution','micrometeorite','micrometeoritic','micrometeoroid','micromillimetre','microphotometer','microprocessor','microscopically','microsporangium','microsporophyll','militarisation','militarization','millenarianism','millionairess','miniaturisation','miniaturization','misapplication','misapprehend','misapprehension','misappropriate','misappropriated','miscalculation','mischievousness','misconstruction','miserableness','misinformation','misinterpret','misrepresent','misshapenness','mistranslation','momentousness','monochromatism','monopolization','monosaccharide','monounsaturated','morphologically','morphophonemics','mountaineering','multiplication','multiprocessing','multiprocessor','murderousness','musculoskeletal','musicologically','myelencephalon','mythologisation','mythologization','nationalisation','nationalization','naturalisation','naturalization','nearsightedness','nebuchadnezzar','nefariousness','neighbourliness','neocolonialism','neoconservatism','neoconservative','nervelessness','neuroanatomical','neurobiological','neurobiologist','neurohypophysis','neurophysiology','neuropsychiatry','neuropsychology','neuroscientist','neutralisation','neutralization','nitrocellulose','nitrochloroform','nitroglycerine','noctambulation','noiselessness','nonachievement','noncommissioned','noncommunicable','nonconformance','nonconformity','nondevelopment','nondisjunction','nonequivalence','nonhierarchical','noninflammatory','nonintellectual','noninterference','nonintersecting','nonintervention','nonparticipant','nonpartisanship','nonperformance','nonprescription','nonprofessional','nonspecifically','nontransferable','nonuniformity','norepinephrine','northeastwardly','northwestwardly','noticeability','notwithstanding','nucleosynthesis','numismatologist','numismatology','objectification','objectiveness','obliviousness','obnoxiousness','obsessiveness','obstructionism','obstructionist','obtrusiveness','occidentalise','offensiveness','officiousness','oligodendrocyte','oligodendroglia','oligosaccharide','omnidirectional','operationalism','ophthalmologist','ophthalmology','ophthalmoplegia','ophthalmoscope','opisthognathous','opportuneness','organophosphate','orthogonality','orthophosphate','osteomyelitis','outspokenness','overachievement','overbearingness','overcapitalise','overcapitalize','overcompensate','overconfidence','overcredulity','overdramatise','overdramatize','overemphasize','overestimation','overgeneralize','overindulgence','overpopulation','overproduction','overprotection','overrefinement','oversimplify','overspecialise','overspecialize','overutilization','oxidoreductase','oxyhaemoglobin','oxyphenbutazone','oxytetracycline','palaeobiology','palaeoecology','palaeogeography','palaeontologist','palaeontology','palaeopathology','palaeozoology','palatableness','paleontological','paleontologist','parallelepiped','parallelopiped','paramyxovirus','parasympathetic','parenthetically','parliamentarian','parthenocarpy','parthenogenesis','parthenogenetic','particularise','particularistic','particularity','pasteurisation','pasteurization','paterfamilias','peaceableness','penetrability','pennilessness','penuriousness','perdurability','perfluorocarbon','periodontitis','peripateticism','perishability','permutability','perpendicularly','personification','perspicuousness','pervasiveness','pessimistically','phantasmagoria','pharmaceutical','pharmacological','pharmacologist','phenobarbitone','phenolphthalein','phenomenology','phenylbutazone','phenylketonuria','philanthropist','philosophically','phosphocreatine','phosphoprotein','phosphorescence','photoconductive','photoelectrical','photoengraving','photojournalism','photojournalist','photolithograph','photomechanical','photometrically','photomicrograph','photosensitise','photosensitize','physicochemical','physiologically','physiotherapist','physiotherapy','picturesqueness','pigheadedness','plagiocephaly','plainclothesman','plaintiveness','platitudinarian','platitudinize','plausibleness','plenipotentiary','plenteousness','plentifulness','plethysmograph','pleuropneumonia','plumbaginaceous','pneumonectomy','pointlessness','poliomyelitis','polycrystalline','polyelectrolyte','polymerisation','polymerization','polysaccharide','polyunsaturated','ponderousness','popularisation','popularization','porcupinefish','postoperatively','powerlessness','practicableness','preachification','prearrangement','precipitateness','precipitousness','precondition','predestinarian','predestination','predisposition','prefabrication','prematureness','prepositionally','prescriptivism','preservationist','prestidigitator','prestigiousness','presupposition','pretentiousness','preternaturally','pricelessness','primitiveness','problematically','procrastinate','procrastination','procrastinator','professionalise','professionalism','professionalize','profitability','prognosticate','prognostication','prognosticative','prognosticator','progressiveness','progressivity','prohibitionist','promiscuousness','pronunciamento','proportionality','proportionately','proprietorship','proprioception','prosencephalon','prostatectomy','prosthodontist','protozoological','protozoologist','pseudoephedrine','pseudoscorpion','psychoanalyse','psychoanalyze','psycholinguist','psychologically','psychoneurotic','psychopathology','psychophysicist','psychosexuality','psychosurgery','psychotherapist','psychotherapy','pulchritudinous','punctiliousness','purposelessness','pusillanimity','pusillanimously','pycnodysostosis','pyroelectricity','quadruplicate','quantification','quarrelsomeness','quatercentenary','querulousness','quincentenary','quincentennial','radioactivity','radiobiologist','radiophotograph','radioprotection','radiotelegraph','radiotelegraphy','radiotelephone','radiotelephonic','radiotherapist','rapaciousness','rationalisation','rationalization','reapportionment','recalcitrancy','recapitulation','receptiveness','reciprocality','reclusiveness','recommencement','recommendation','reconciliation','reconditeness','reconnaissance','reconsideration','reconstruction','redetermination','redistribution','reflexiveness','regularisation','regularization','rehabilitation','reintroduction','religiousness','relinquishment','reorganisation','reorganization','repetitiousness','representation','reproducibility','repulsiveness','requisiteness','resourcefulness','responsibleness','restrengthen','restrictiveness','retentiveness','retinoblastoma','retrospectively','reversibility','revitalisation','revitalization','revivification','revolutionary','revolutionise','rheumatologist','rhinencephalon','rhombencephalon','righteousness','rigidification','roentgenography','romanticisation','romanticization','sadomasochistic','sagaciousness','salaciousness','salpingectomy','sanctification','sanctimoniously','sanguification','saponification','scandalisation','scandalization','scaphocephaly','schematisation','schematization','schistosomiasis','schlockmeister','seaworthiness','secretiveness','secularisation','secularization','segregationist','semicentennial','semiterrestrial','semitransparent','sensationalism','sensationalist','senselessness','sensitiveness','sentimentalise','sentimentalism','sentimentalist','sentimentalize','septuagenarian','serviceableness','servomechanical','servomechanism','sesquipedalian','shamelessness','shapelessness','shiftlessness','sidesplittingly','sightlessness','sigmoidectomy','sigmoidoscopy','simplification','slaughterhouse','sledgehammer','sleeplessness','sociobiological','sociobiologist','sociolinguistic','softheartedness','solidification','solitudinarian','somnambulation','sophistication','sorrowfulness','soundlessness','southeastwardly','southwestwardly','specialisation','specialization','spectroscopical','speculativeness','spermatogenesis','sphericalness','spinelessness','spironolactone','spontaneousness','sporangiophore','sprightliness','squeamishness','squeezability','standardisation','standardization','standoffishness','steadfastness','steganography','stereotypically','stigmatisation','stigmatization','stoichiometry','straightforward','straightjacket','stratification','strenuousness','streptobacillus','streptocarpus','streptodornase','streptothricin','strikebreaking','stultification','subordinateness','substantialness','substantiation','succinylcholine','sumptuousness','superabundance','superannuation','supererogation','superinfection','superintendence','superintendent','supernaturalism','supernaturalist','supernumerary','superordinate','superordination','superpatriotism','superscription','superstitiously','superstructure','supersymmetry','supplementation','surreptitiously','susceptibleness','syllabification','symmetricalness','sympathectomy','sympathetically','sympathomimetic','symptomatically','synchronicity','synchronisation','synchronization','synergistically','systematisation','systematization','talkativeness','tastelessness','tatterdemalion','technologically','telecommunicate','teleconference','telegraphically','telephotograph','telephotography','teleprocessing','teletypewriter','temperamentally','temperateness','tempestuousness','temporariness','tenaciousness','tendentiousness','tenosynovitis','tergiversation','territorialise','territorialize','tetrasporangium','thaumatolatry','theatricality','therapeutically','thermocautery','thermochemistry','thermodynamical','thermojunction','thermoreceptor','thermoregulator','thermotherapy','thoracocentesis','thoughtlessness','thromboembolism','thromboplastin','thyrocalcitonin','thyroidectomy','tightfistedness','tintinnabulate','tomboyishness','tonsillectomy','toothsomeness','topographically','totalitarianism','tractableness','traditionalism','traditionalist','transamination','transcendency','transferability','transfiguration','transformation','transistorise','transliterate','transliteration','transmigration','transmogrify','transmutability','transparentness','transplantation','transportation','transposability','transsexualism','transvestitism','triangularity','tribromoethanol','trinitrotoluene','troubleshoot','troubleshooter','troublesomeness','trustworthiness','turbogenerator','tympanoplasty','typographically','tyrannosaurus','ultracentrifuge','ultramicroscope','ultramontanism','ultrasonography','unacceptability','unaccommodating','unascertainable','unassertiveness','unboundedness','unbreakableness','unceremoniously','uncertainness','unchallengeable','unchangeability','uncleanliness','uncloudedness','uncommunicative','uncompassionate','uncomplainingly','uncomplimentary','uncomprehending','unconditionally','unconnectedness','unconscientious','unconsciousness','uncontroversial','undemonstrative','underdevelop','underestimate','underestimation','undernourish','underperform','underperformer','underprivileged','underproduction','understandingly','understatement','undervaluation','undistinguished','undutifulness','unexceptionable','unfamiliarity','unfavorableness','unfeelingness','ungentlemanlike','ungrammatically','unhealthfulness','unhealthiness','unimaginatively','uninformatively','unintelligently','unintentionally','uninterestingly','uninterruptedly','unknowingness','unknowledgeable','unmindfulness','unnaturalness','unobjectionable','unobtrusiveness','unoriginality','unparliamentary','unpatriotically','unprecedentedly','unprepossessing','unpretentiously','unprofitability','unpronounceable','unprotectedness','unquestioningly','unrealistically','unreconstructed','unreliability','unrighteousness','unselfconscious','unselfishness','unsightliness','unsociability','unsophisticated','unsportsmanlike','unstatesmanlike','unsubstantiated','unsuitability','unsymmetrically','unwholesomeness','unwillingness','utilitarianism','valetudinarian','valuelessness','vascularisation','vascularization','vasoconstrictor','venerableness','venturesomeness','verisimilitude','vespertilionid','vivisectionist','voicelessness','voraciousness','voyeuristically','vulnerability','warmheartedness','watercolourist','waterlessness','weatherboarding','weatherliness','weatherproof','weatherstrip','whippersnapper','wholesomeness','withdrawnness','wonderfulness','worthlessness','xeroradiography']
     difficulty_select.destroy()
+def fullscreenToggle(event):
+    global fullscreen, retry_size
 
+    retry_size = medium_size // 2
+
+    if fullscreen == True:
+        new_width = int(game.winfo_screenwidth() / 2)
+        new_height = int(game.winfo_screenheight() / 2)
+        game.attributes("-fullscreen", False)
+        game.geometry(f"{new_width}x{new_height}")
+
+        fullscreen = False
+
+        resizeWidgets()
+    elif fullscreen == False:
+        game.attributes("-fullscreen", True)
+ 
+        fullscreen = True
+
+        resizeWidgets()
+def resizeWidgets(event = None):
+    if game.winfo_width() > game.winfo_height():
+        size_dynamic = game.winfo_height() // 25
+        small_size_dynamic = game.winfo_height() // 33
+        medium_size_dynamic = game.winfo_height() // 31
+        retry_size_dynamic = medium_size_dynamic
+    
+        if len(word) > 10:
+            large_size_dynamic = game.winfo_height() // num_to_divide_by
+        else:
+            large_size_dynamic = size_dynamic
+
+        try:
+            word_display.configure(font = (None,large_size_dynamic))
+        except:
+            pass
+        try:
+            main_text.configure(font = ("Consolas",size_dynamic))
+        except:
+            pass
+        try:
+            letter.configure(font = (None,medium_size_dynamic))
+        except:
+            pass
+        try:
+            confirm_text.configure(font = (None,small_size_dynamic))
+        except:
+            pass
+        try:
+            exit_game.configure(font = (None,small_size_dynamic))
+        except:
+            pass
+        try:
+            streak.configure(font = (None,small_size_dynamic))
+        except:
+            pass
+        try:
+            retry_game_win.configure(font = (None,retry_size_dynamic))
+        except:
+            pass
+        try:
+            retry_game_lose.configure(font = (None,retry_size_dynamic))
+        except:
+            pass
+    elif game.winfo_width() < game.winfo_height():
+        size_dynamic = game.winfo_width() // 25
+        small_size_dynamic = game.winfo_width() // 33
+        medium_size_dynamic = game.winfo_width() // 31
+        retry_size_dynamic = medium_size_dynamic
+    
+        if len(word) > 10:
+            large_size_dynamic = game.winfo_width() // num_to_divide_by
+        else:
+            large_size_dynamic = size_dynamic
+
+        try:
+            word_display.configure(font = (None,large_size_dynamic))
+        except:
+            pass
+        try:
+            main_text.configure(font = ("Consolas",size_dynamic))
+        except:
+            pass
+        try:
+            letter.configure(font = (None,medium_size_dynamic))
+        except:
+            pass
+        try:
+            confirm_text.configure(font = (None,small_size_dynamic))
+        except:
+            pass
+        try:
+            exit_game.configure(font = (None,small_size_dynamic))
+        except:
+            pass
+        try:
+            streak.configure(font = (None,small_size_dynamic))
+        except:
+            pass
+        try:
+            retry_game_win.configure(font = (None,retry_size_dynamic))
+        except:
+            pass
+        try:
+            retry_game_lose.configure(font = (None,retry_size_dynamic))
+        except:
+            pass
+
+    game.update()
+
+fullscreen = True
 score = 0
 bonus_score = 0
 score_display = "Score = N/A, Streak = N/A"
