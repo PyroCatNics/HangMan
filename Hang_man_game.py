@@ -166,8 +166,6 @@ def gatherAndDisplay(event):
 
             bonus = 0
     else:
-        word_display.destroy()
-
         confirm_text.config(bg = flawless_colour4, text = "Press Tab to retry game.")
         main_text.config(bg = flawless_colour2)
         game.config(bg = flawless_colour1)
@@ -175,8 +173,8 @@ def gatherAndDisplay(event):
         exit_game.config(bg = flawless_colour3)
         streak.config(bg = flawless_colour2)
         frame.config(bg = flawless_colour1)
-
-        main_text.config(width = 50, text = str(guessedLetters)+"\n"+"WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
+        word_display.config(bg = flawless_colour2, text = str(guessedLetters))
+        main_text.config(width = 50, text = "WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
         letter.destroy()
         game.bind('<Tab>',retryGameWin)
 
@@ -223,7 +221,7 @@ def playGame(colour1, colour2, colour3, colour4, colour5, colour6, word_list):
     game.attributes('-fullscreen', True)
     game.configure(bg = colour1)
 
-    num_to_divide_by = len(word) * 29
+    num_to_divide_by = len(word) * 3
 
     size = game.winfo_screenheight() // 25
     small_size = game.winfo_screenheight() // 33
@@ -510,5 +508,7 @@ category.pack(padx = 40, pady = 5)
 
 begin_game = Button(width = 10,font = (None,20), text = "Start game", bg = "#48c452", command = playGameFirst)
 begin_game.pack(padx = 40, pady = 10)
+
+config_window.mainloop()
 
 config_window.mainloop()
