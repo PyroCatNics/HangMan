@@ -99,8 +99,6 @@ def gatherAndDisplay(event):
     global wrongGuesses, timesDone, hangmanDisplay, accusation, reiteration
     accusation = ""
     reiteration = ""
-
-    confirm_text.destroy()
     
     guess = letter.get()
     if guess in word:
@@ -145,17 +143,15 @@ def gatherAndDisplay(event):
         word_display.config(width = 50, bg = display_colour, text = f"{str(guessedLetters)}\n")
         main_text.config(width = 50, text = hangmanDisplay+wrongGuesses+accusation+reiteration)
         if timesDone > 9:
-            global retry_game_lose
-            
+            confirm_text.config(bg = confirm_text_colour, text = "Press Tab to retry game.")
             letter.destroy()
-            retry_game_lose = Button(retry_frame, width = 10, font = (None, retry_size), bg = retry_colour, text = "New Game", command = retryGameLose)
-            retry_game_lose.pack()
         elif timesDone == 0:
             global flawless_colour1, flawless_colour2, flawless_colour3, flawless_colour4, flawless_colour5, flawless_colour6, bonus
 
             flawless_colour1 = "#ffd95c"
             flawless_colour2 = "#e7b308"
             flawless_colour3 = "#ffcd2b"
+            flawless_colour4 = "#f5bf10"
             flawless_colour5 = "#ffd139"
             flawless_colour6 = "#FFC400"
 
@@ -164,34 +160,35 @@ def gatherAndDisplay(event):
             flawless_colour1 = background_colour
             flawless_colour2 = display_colour
             flawless_colour3 = exit_game_colour
+            flawless_colour4 = confirm_text_colour
             flawless_colour5 = retry_colour
             flawless_colour6 = enter_letter_colour
 
             bonus = 0
     else:
-        global retry_game_win
-
         word_display.destroy()
 
+        confirm_text.config(bg = flawless_colour4, text = "Press Tab to retry game.")
         main_text.config(bg = flawless_colour2)
         game.config(bg = flawless_colour1)
         letter.config(bg = flawless_colour6)
         exit_game.config(bg = flawless_colour3)
         streak.config(bg = flawless_colour2)
         frame.config(bg = flawless_colour1)
-        retry_frame.config(bg = flawless_colour1)
 
         main_text.config(width = 50, text = str(guessedLetters)+"\n"+"WELL DONE! You guessed the word! It was:\n"+(word.capitalize()))
         letter.destroy()
-        retry_game_win = Button(retry_frame, width = 10, font = (None, retry_size), bg = flawless_colour5, text = "New Game", command = retryGameWin)
-        retry_game_win.pack()
-def retryGameLose():
+        game.bind('<Tab>',retryGameWin)
+
+    game.update()
+    game.mainloop()
+def retryGameLose(event):
     global score, score_display
     score = 0
     score_display = str(f"Score = {bonus_score}, Streak = {score}")
     game.destroy()
     playGame(bg_colour, text_colour, exit_colour, letter_colour, new_colour, entry_colour, category_list)
-def retryGameWin():
+def retryGameWin(event):
     global score, score_display, bonus_score
 
     score += 1
@@ -260,15 +257,13 @@ def playGame(colour1, colour2, colour3, colour4, colour5, colour6, word_list):
 
     streak = Label(frame, bg = colour2, font = (None,small_size), text = score_display)
     streak.pack(side = RIGHT, padx = padding * 4)
-
-    retry_frame = Frame(game, width = 50, bg = colour1)
-    retry_frame.pack(padx = 40, pady = padding * 3)
     
     game.update()
 
     game.bind('<Return>',gatherAndDisplay)
     game.bind('<F11>', fullscreenToggle)
     game.bind('<Configure>', resizeWidgets)
+    game.bind('<Tab>', retryGameLose)
 
     game.mainloop()
 def playGameFirst():
@@ -312,7 +307,7 @@ def getColour():
     chosen_colour = colour.get(colour.curselection())
 
     if chosen_colour == "Red":
-        bg_colour = "#eb9e9e"
+        bg_colour = "#ee7e7e"
         text_colour = "#e06666"
         exit_colour = "#cf3737"
         letter_colour = "#f55757"
@@ -413,7 +408,6 @@ def resizeWidgets(event = None):
         size_dynamic = game.winfo_height() // 25
         small_size_dynamic = game.winfo_height() // 33
         medium_size_dynamic = game.winfo_height() // 31
-        retry_size_dynamic = medium_size_dynamic
     
         if len(word) > 10:
             large_size_dynamic = game.winfo_height() // num_to_divide_by
@@ -444,19 +438,10 @@ def resizeWidgets(event = None):
             streak.configure(font = (None,small_size_dynamic))
         except:
             pass
-        try:
-            retry_game_win.configure(font = (None,retry_size_dynamic))
-        except:
-            pass
-        try:
-            retry_game_lose.configure(font = (None,retry_size_dynamic))
-        except:
-            pass
     elif game.winfo_width() < game.winfo_height():
         size_dynamic = game.winfo_width() // 25
         small_size_dynamic = game.winfo_width() // 33
         medium_size_dynamic = game.winfo_width() // 31
-        retry_size_dynamic = medium_size_dynamic
     
         if len(word) > 10:
             large_size_dynamic = game.winfo_width() // num_to_divide_by
@@ -485,14 +470,6 @@ def resizeWidgets(event = None):
             pass
         try:
             streak.configure(font = (None,small_size_dynamic))
-        except:
-            pass
-        try:
-            retry_game_win.configure(font = (None,retry_size_dynamic))
-        except:
-            pass
-        try:
-            retry_game_lose.configure(font = (None,retry_size_dynamic))
         except:
             pass
 
